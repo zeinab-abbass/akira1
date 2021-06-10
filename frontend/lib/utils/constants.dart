@@ -28,6 +28,7 @@ class UIGuide {
   static const Color THEME_PRIMARY = Color(0XFF575C79);
   static const Color THEME_LIGHT = Color(0XFF8489A8);
   static const Color THEME_DARK = Color(0XFF2D334D);
-  static HexColor COLOR1 = HexColor("#0D1724");
-  static Color COLOR2 = Colors.white70;
+  static Color COLOR1 = Color(0xff205072);
+  static Color COLOR2 = Color(0xff205072);
+  static Color COLOR3 = Colors.grey;
 }

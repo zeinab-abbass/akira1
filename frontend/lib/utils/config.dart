@@ -7,16 +7,16 @@ class AppConfig {
 
 //Class to get Screen Size
 class SizeConfig {
-  static MediaQueryData _mediaQueryData;
-  static double screenWidth;
-  static double screenHeight;
-  static double blockSizeHorizontal;
-  static double blockSizeVertical;
+  static MediaQueryData _mediaQueryData = 0 as MediaQueryData;
+  static double screenWidth = 0;
+  static double screenHeight = 0;
+  static double blockSizeHorizontal = 0;
+  static double blockSizeVertical = 0;
 
-  static double _safeAreaHorizontal;
-  static double _safeAreaVertical;
-  static double safeBlockHorizontal;
-  static double safeBlockVertical;
+  static double _safeAreaHorizontal = 0;
+  static double _safeAreaVertical = 0;
+  static double safeBlockHorizontal = 0;
+  static double safeBlockVertical = 0;
 
   void init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);
