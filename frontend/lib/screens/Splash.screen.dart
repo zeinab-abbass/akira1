@@ -9,6 +9,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:shimmer/shimmer.dart';
 
 import 'Register1.screen.dart';
+import 'Home.screen.dart';
 import 'Register2.screen.dart';
 
 class Splash extends StatefulWidget {
@@ -27,7 +28,7 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin{
   void initState() {
     super.initState();
     _controller =
-        AnimationController(vsync: this, duration: Duration(seconds: 5));
+        AnimationController(vsync: this, duration: Duration(seconds: 6));
     _animation = Tween(begin: 50.0, end: 200.0).animate(_controller)
       ..addStatusListener((state) {
         if (state == AnimationStatus.completed) {

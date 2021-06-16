@@ -9,6 +9,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'Home.screen.dart';
 import 'Register4.screen.dart';
 
 class Register5 extends StatefulWidget {
@@ -157,6 +158,7 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
                             child: FloatingActionButton(
                               onPressed: () {
                                 _onImageButtonPressed(ImageSource.gallery, context: context);
+                                  Navigator.of(context).pushNamed(Home.routeName);
                               },
                               heroTag: 'image0',
                               tooltip: 'Pick Image from gallery',
@@ -170,6 +172,7 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
                          FloatingActionButton(
                               onPressed: () {
                                 _onImageButtonPressed(ImageSource.camera, context: context);
+                                Navigator.of(context).pushNamed(Home.routeName);
                               },
                               heroTag: 'image1',
                               tooltip: 'Take a Photo',

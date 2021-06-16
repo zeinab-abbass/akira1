@@ -142,6 +142,13 @@
             </list>
           </value>
         </entry>
+        <entry key="filter_list">
+          <value>
+            <list>
+              <option value="C:/Flutter/.pub-cache/hosted/pub.dartlang.org/filter_list-1.0.0/lib" />
+            </list>
+          </value>
+        </entry>
         <entry key="flutter">
           <value>
             <list>
@@ -697,6 +704,7 @@
       <root url="file://C:/Flutter/.pub-cache/hosted/pub.dartlang.org/fake_async-1.2.0/lib" />
       <root url="file://C:/Flutter/.pub-cache/hosted/pub.dartlang.org/ffi-1.1.2/lib" />
       <root url="file://C:/Flutter/.pub-cache/hosted/pub.dartlang.org/file-6.1.1/lib" />
+      <root url="file://C:/Flutter/.pub-cache/hosted/pub.dartlang.org/filter_list-1.0.0/lib" />
       <root url="file://C:/Flutter/.pub-cache/hosted/pub.dartlang.org/flutter_plugin_android_lifecycle-2.0.2/lib" />
       <root url="file://C:/Flutter/.pub-cache/hosted/pub.dartlang.org/flutter_svg-0.21.0+1/lib" />
       <root url="file://C:/Flutter/.pub-cache/hosted/pub.dartlang.org/font_awesome_flutter-9.0.0/lib" />

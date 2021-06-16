@@ -2,8 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl_phone_number_input/intl_phone_number_input.dart';
-
-import 'Register5.screen.dart';
+import 'Register6.screen.dart';
 
 class Register4 extends StatefulWidget {
 
@@ -132,7 +131,7 @@ Widget _inputField1() {
 Widget _loginbtn(context) {
   // ignore: deprecated_member_use
   return FlatButton(
-    onPressed: () => { Navigator.of(context).pushNamed(Register5.routeName) },
+    onPressed: () => { Navigator.of(context).pushNamed(Register6.routeName) },
     padding: EdgeInsets.symmetric(vertical: 18, horizontal: 100),
     shape: new RoundedRectangleBorder(
       borderRadius: new BorderRadius.circular(20.0),
