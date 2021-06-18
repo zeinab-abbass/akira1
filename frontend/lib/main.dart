@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:frontend/screens/Home.screen.dart';
-import 'package:frontend/screens/Register1.screen.dart';
 import 'package:frontend/screens/Register2.screen.dart';
 import 'package:frontend/screens/Register3.screen.dart';
 import 'package:frontend/screens/Register4.screen.dart';

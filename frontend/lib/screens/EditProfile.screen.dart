@@ -1,10 +1,8 @@
 
 import 'package:filter_list/filter_list.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:hexcolor/hexcolor.dart';
 
 class EditProfile extends StatefulWidget {
 
@@ -18,8 +16,6 @@ class EditProfile extends StatefulWidget {
 }
 
 class _EditProfileState extends State<EditProfile> {
-
-    final TextEditingController _namecontroller = TextEditingController();
 
     bool showPassword = false;
     @override
@@ -90,7 +86,7 @@ class _EditProfileState extends State<EditProfile> {
                   buildTextField("Location", "Lebanon, Beirut", false),
                   buildTextField1(context, "Hobbies",),
                   buildTextField2(context, "Interests",),
-                  buildTextField1(context, "Work Experiance",),
+                  buildTextField3(context, "Work Experiance",),
 
                   SizedBox(
                     height: 15,
@@ -292,6 +288,216 @@ class _EditProfileState extends State<EditProfile> {
       );
     }
 
+    Widget setupFormContainer() {
+      return Container(
+        height: MediaQuery.of(context).size.height / 3, // Change as per your requirement
+        width: MediaQuery.of(context).size.width / 2, // Change as per your requirement
+        child: ListView(
+          children: [
+
+            TextField(
+              style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  color: Colors.black,
+                  letterSpacing: 0.24,
+                  fontWeight: FontWeight.w500),
+              decoration: InputDecoration(
+                hintText: "Start-End Date",
+                hintStyle: TextStyle(
+                    color: Color(0xffA6B0BD)
+                ),
+                fillColor: Colors.white,
+                filled: true,
+
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(1),
+                  ),
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+
+              ),
+
+            ),
+            SizedBox(height: 10,),
+            TextField(
+              style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  color: Colors.black,
+                  letterSpacing: 0.24,
+                  fontWeight: FontWeight.w500),
+              decoration: InputDecoration(
+                hintText: "Title",
+                hintStyle: TextStyle(
+                    color: Color(0xffA6B0BD)
+                ),
+                fillColor: Colors.white,
+                filled: true,
+
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(1),
+                  ),
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+
+              ),
+
+            ),
+
+            SizedBox(height: 10,),
+            TextField(
+              style: GoogleFonts.poppins(
+                  fontSize: 20,
+                  color: Colors.black,
+                  letterSpacing: 0.24,
+                  fontWeight: FontWeight.w500),
+              decoration: InputDecoration(
+                hintText: "Description",
+                hintStyle: TextStyle(
+                    color: Color(0xffA6B0BD)
+                ),
+                fillColor: Colors.white,
+                filled: true,
+
+                enabledBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(10),
+                  ),
+                  borderSide: BorderSide(color: Colors.grey.shade200),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderRadius: BorderRadius.all(
+                    Radius.circular(1),
+                  ),
+                  borderSide: BorderSide(color: Colors.white),
+                ),
+                floatingLabelBehavior: FloatingLabelBehavior.always,
+
+              ),
+
+            ),
+          ],
+        )
+      );
+    }
+
+
+
+    _openWorkExperianceForm(BuildContext context){
+
+      TextEditingController _workController = new TextEditingController();
+      TextEditingController _dateController = new TextEditingController();
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  Text('Add Experiance'),
+                  SizedBox(width: 3,),
+                  FlatButton(onPressed: (){}, child: Icon(Icons.add))
+                ],
+              ),
+              content: setupFormContainer(),
+              actions: [
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width / 100) * 10 ),
+                  child: Row(
+                    children: [
+                      OutlineButton(
+                        padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                        shape: new RoundedRectangleBorder(
+                          borderRadius: new BorderRadius.circular(10.0),
+                        ),
+                        child: Text(
+                          "CANCEL",
+                          style: GoogleFonts.montserrat(
+                              fontSize: 15,
+                              color: UIGuide.COLOR1,
+                              letterSpacing: 0.168,
+                              fontWeight: FontWeight.w500),
+                        ),
+                        color: UIGuide.WHITE,
+                        onPressed: () {  },
+                      ),
+                      SizedBox(width: 10,),
+                      RaisedButton(
+                          onPressed: () {},
+                          padding: EdgeInsets.symmetric(vertical: 15, horizontal: 20),
+                          shape: new RoundedRectangleBorder(
+                            borderRadius: new BorderRadius.circular(10.0),
+                          ),
+                          child: Text(
+                            "SAVE",
+                            style: GoogleFonts.montserrat(
+                                fontSize: 16,
+                                color: Colors.white,
+                                letterSpacing: 0.168,
+                                fontWeight: FontWeight.w500),
+                          ),
+                          color: UIGuide.COLOR2
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            );
+          });
+    }
+
+    Widget setupAlertDialoadContainer() {
+      return Container(
+        height: MediaQuery.of(context).size.height / 2, // Change as per your requirement
+        width: MediaQuery.of(context).size.width / 2, // Change as per your requirement
+        child: ListView.builder(
+          shrinkWrap: true,
+          itemCount: 5,
+          itemBuilder: (BuildContext context, int index) {
+            return ListTile(
+              title: Text('Gujarat, India'),
+            );
+          },
+        ),
+      );
+    }
+
+    _openWorkExperianceDialog(BuildContext context){
+
+      TextEditingController _workController = new TextEditingController();
+      TextEditingController _dateController = new TextEditingController();
+
+      showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Row(
+                children: [
+                  Text('Add Experiance'),
+                  SizedBox(width: 3,),
+                  FlatButton(onPressed: (){ _openWorkExperianceForm(context); }, child: Icon(Icons.add))
+                ],
+              ),
+              content: setupAlertDialoadContainer(),
+            );
+          });
+    }
+
 
     Widget buildTextField1(context, String labelText) {
       return Padding(
@@ -357,6 +563,51 @@ class _EditProfileState extends State<EditProfile> {
             suffixIcon: IconButton(
               icon: Icon(Icons.edit),
               onPressed: (){ _openInterestsDialog(); },
+            ),
+
+            enabledBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(10),
+              ),
+              borderSide: BorderSide(color: Colors.grey.shade200),
+            ),
+            focusedBorder: OutlineInputBorder(
+              borderRadius: BorderRadius.all(
+                Radius.circular(1),
+              ),
+              borderSide: BorderSide(color: Colors.white),
+            ),
+            labelText: labelText,
+            floatingLabelBehavior: FloatingLabelBehavior.always,
+
+          ),
+
+        ),
+
+      );
+    }
+
+
+    Widget buildTextField3(context, String labelText) {
+      return Padding(
+        padding: const EdgeInsets.only(bottom: 15.0),
+        child: TextField(
+          style: GoogleFonts.poppins(
+              fontSize: 20,
+              color: Colors.black,
+              letterSpacing: 0.24,
+              fontWeight: FontWeight.w500),
+          decoration: InputDecoration(
+            hintText: "...",
+            hintStyle: TextStyle(
+                color: Color(0xffA6B0BD)
+            ),
+            fillColor: Colors.white,
+            filled: true,
+
+            suffixIcon: IconButton(
+              icon: Icon(Icons.edit),
+              onPressed: (){ _openWorkExperianceDialog(context); },
             ),
 
             enabledBorder: OutlineInputBorder(
