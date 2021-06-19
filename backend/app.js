@@ -10,7 +10,7 @@ require('./database/connection');
 const router = express.Router()
 const io = require("socket.io")(http)
 
-//const userRoutes = require('./routes/user.route');
+const userRoutes = require('./routes/user.route');
 
 app.use(cors());
 
@@ -23,7 +23,7 @@ app.use(bodyParser.json()); // to give Express the ability to read JSON payloads
 app.use(express.json());
 
 //router
-//app.use(userRoutes);
+app.use(userRoutes);
 
 // start server
 const port = '1000';
