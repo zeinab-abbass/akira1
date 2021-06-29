@@ -74,7 +74,7 @@ class _UserProfileState extends State<UserProfile> {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: FileImage(File(imagePath!) )
+                                  image: AssetImage("assets/images/profile.png")
                               )
                           ),
                         ),
@@ -116,7 +116,7 @@ class _UserProfileState extends State<UserProfile> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
                     Icon(Icons.phone_sharp, color: Colors.white, size: 15,),
-                    SizedBox(width: 5,),
+                    SizedBox(width: 5, ),
                     Text(user.phone,
                       style: GoogleFonts.montserrat(
                         fontSize: 15,

@@ -1,6 +1,7 @@
 import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:frontend/screens/Login.screen.dart';
 import 'package:frontend/screens/Register2.screen.dart';
 import 'package:frontend/services/auth.service.dart';
 import 'package:frontend/utils/config.dart';
@@ -259,7 +260,7 @@ class _Register1State extends State<Register1> with SingleTickerProviderStateMix
           children: [
 
             Container(
-              padding: EdgeInsets.symmetric(vertical: (MediaQuery.of(context).size.height / 100) * 20, horizontal: 50),
+              padding: EdgeInsets.only(top: (MediaQuery.of(context).size.height / 100) * 20, left: 50, right: 50, bottom: (MediaQuery.of(context).size.height / 100) * 10),
               color: Colors.white,
               width: double.infinity,
               height: MediaQuery.of(context).size.height,
@@ -317,7 +318,26 @@ class _Register1State extends State<Register1> with SingleTickerProviderStateMix
                   _inputField1(),
                   SizedBox(height: (MediaQuery.of(context).size.height / 100) * 3),
                   _loginbtn(context),
+                  SizedBox(height: (MediaQuery.of(context).size.height / 100) * 1),
+                  Padding(
+                    padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width / 100) * 7),
+                    child: Row(
+                      children: [
+                        Text("Already have account ?"),
+                        FlatButton(child: Text("Login"),
+                          onPressed: (){
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Login(
 
+                                  ),
+                                )
+                            );
+                        },),
+                      ],
+                    ),
+                  )
                 ],
               ),
             )

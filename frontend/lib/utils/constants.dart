@@ -30,6 +30,6 @@ class UIGuide {
   static Color COLOR3 = Colors.grey;
 
 //host
-  static const String host = "http://192.168.137.36192.168.137.36:1000";
+  static const String host = "http://192.168.137.36:1000";
 }
 

@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:frontend/models/User.model.dart';
+import 'package:frontend/services/auth.service.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
@@ -26,11 +27,24 @@ class _HomeState extends State<Home>  {
   late final AnimationController _animationController;
   final User user;
   final String? imagepath;
+  AuthService _authService = new AuthService();
+  
+  List<User> users = [];
+  
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+  }
 
   _HomeState(this.user, this.imagepath);
 
+
   @override
   Widget build(BuildContext context) {
+
+    _authService.users().then((value) => users = value );
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -38,6 +52,9 @@ class _HomeState extends State<Home>  {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: UIGuide.COLOR1), //add this line here
+        actions: [
+          IconButton(icon: Icon(Icons.search_sharp), onPressed: (){})
+        ],
       ),
       drawer: Banner(
         location: BannerLocation.bottomEnd,
@@ -79,7 +96,7 @@ class _HomeState extends State<Home>  {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                 fit: BoxFit.cover,
-                                image: FileImage(File(imagepath!) )
+                                image: FileImage(File(imagepath!)),
                               )
                           ),
                         ),
@@ -166,6 +183,115 @@ class _HomeState extends State<Home>  {
           ),
         ),
       ),
+
+      body: SafeArea(
+        child: Container(
+          child: Padding(
+            padding: const EdgeInsets.all(20.0),
+            child: Column(
+              children: <Widget>[
+                Container(
+                  width: double.infinity,
+                  height: 200,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: Container(
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(20),
+                      gradient: LinearGradient(
+                        begin: Alignment.bottomRight,
+                        colors: [
+                          Colors.black.withOpacity(.4),
+                          Colors.black.withOpacity(.2),
+                        ],
+                      ),
+                    ),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.end,
+                      children: <Widget>[
+                        Text(
+                          'Get more Features',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 30,
+                            fontFamily: 'Sans-serif',
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                        Container(
+                          height: 50,
+                          margin: EdgeInsets.symmetric(horizontal: 40),
+                          decoration: BoxDecoration(
+                              color: Colors.white,
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Center(
+                            child: Text(
+                              ' Upgrade',
+                              style: TextStyle(
+                                color: Colors.black87,
+                                fontSize: 20,
+                                fontWeight: FontWeight.bold,
+                                fontFamily: 'Sans-serif',
+                              ),
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 30),
+                      ],
+                    ),
+                  ),
+                ),
+                SizedBox(height: 20),
+                Expanded(
+                  child: GridView.builder(
+                    itemCount: users.length,
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      crossAxisSpacing: 10,
+                      mainAxisSpacing: 10,
+                    ),
+                    itemBuilder: (BuildContext context, int index) {
+                      return Card(
+                        color: Colors.transparent,
+                        elevation: 0,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            image: DecorationImage(
+                              image: AssetImage("assets/images/profile.png"),
+                              fit: BoxFit.cover,
+                            ),
+                          ),
+                          child: Transform.translate(
+                            offset: Offset(60, -60),
+                            child: Container(
+                              // width: 30,
+                              // height: 40,
+                              margin: EdgeInsets.symmetric(
+                                  horizontal: 72, vertical: 70),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white),
+                              child: Icon(
+                                Icons.bookmark_border,
+                                size: 20,
+                              ),
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                ),
+                )
+              ],
+
+            ),
+          ),
+        ),
+      ),
+
     );
 
   }

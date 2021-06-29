@@ -32,19 +32,19 @@ class User {
 
   factory User.fromJson(Map<String, dynamic> json) {
     return User(
-        id: json['result']['_id'],
-        name: json['result']['name'],
-        username: json['result']['username'],
-        email: json['result']['email'],
-        phone: json['result']["phone"],
-        password: json['result']["password"],
-        location: json['result']["location"],
-        status: json['result']["status"],
-        type: json['result']["type"],
-        languages:  List<String>.from(json['result']["languages"]),
-        experiances: json['result']["experiance"],
-        hobbies:  List<String>.from(json['result']["hobbies"]),
-        interests:  List<String>.from(json['result']["interests"]),
+        id: json['_id'],
+        name: json['name'],
+        username: json['username'],
+        email: json['email'],
+        phone: json["phone"],
+        password: json["password"],
+        location: json["location"],
+        status: json["status"],
+        type: json["type"],
+        languages:  List<String>.from(json["languages"]),
+        experiances: json["experiance"],
+        hobbies:  List<String>.from(json["hobbies"]),
+        interests:  List<String>.from(json["interests"]),
     );
   }
 }

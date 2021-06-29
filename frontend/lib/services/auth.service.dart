@@ -10,8 +10,8 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
 
-  Future<User> register(name, username, email, password, phone, location) async {
-
+  Future<User> register(name, username, email, password, phone,
+      location) async {
     User list;
     var response = await http.post(
         Uri.parse(UIGuide.host + "/register"),
@@ -29,7 +29,7 @@ class AuthService {
     );
 
     if (response.statusCode == 201) {
-      Map<String,dynamic> user = json.decode(response.body);
+      Map<String, dynamic> user = json.decode(response.body)['result'];
       print(user);
       list = User.fromJson(user);
       print(list);
@@ -40,9 +40,36 @@ class AuthService {
     }
   }
 
+  Future<User> login(email, password) async {
+    User list;
+
+    var response = await http.post(
+        Uri.parse(UIGuide.host + "/login"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, String>{
+          'email': email,
+          'password': password,
+        })
+    );
+
+    if (response.statusCode == 201) {
+//      SharedPreferences prefs = await SharedPreferences.getInstance();
+//      var parse = jsonDecode(response.body);
+//      await prefs.setString('token', parse["token"]);
+
+      var user = json.decode(response.body)['user'];
+
+      list = User.fromJson(user);
+      return list;
+    } else {
+      throw Exception('Failed to login!');
+    }
+  }
+
 
   Future<bool> validate(email) async {
-
     var response = await http.post(
         Uri.parse(UIGuide.host + "/validate"),
         headers: <String, String>{
@@ -63,8 +90,8 @@ class AuthService {
     }
   }
 
-  Future<int> edit(email, name, password, location, List<String> languages, List<String> hobbies, List<String> interests) async {
-
+  Future<int> edit(email, name, password, location, List<String> languages,
+      List<String> hobbies, List<String> interests) async {
     var response = await http.post(
         Uri.parse(UIGuide.host + "/edit"),
         headers: <String, String>{
@@ -78,11 +105,10 @@ class AuthService {
           'languages': languages,
           'hobbies': hobbies,
           'interests': interests
-
         })
     );
 
-    if (response.statusCode == 201 ) {
+    if (response.statusCode == 201) {
       int res = json.decode(response.body)['result']['ok'];
       print(res);
       return res;
@@ -92,8 +118,7 @@ class AuthService {
     }
   }
 
-  Future<User> get(email) async{
-
+  Future<User> get(email) async {
     var response = await http.post(
         Uri.parse(UIGuide.host + "/edit"),
         headers: <String, String>{
@@ -105,7 +130,7 @@ class AuthService {
         })
     );
 
-    if (response.statusCode == 201 ) {
+    if (response.statusCode == 201) {
       User res = User.fromJson(json.decode(response.body));
       print(res);
       return res;
@@ -113,11 +138,10 @@ class AuthService {
     else {
       throw Exception('Failed to get user');
     }
-
   }
 
-  Future<Experiance> addExperiance(title, company, description, start_year, end_year, user) async {
-
+  Future<Experiance> addExperiance(title, company, description, start_year,
+      end_year, user) async {
     Experiance res;
     var response = await http.post(
         Uri.parse(UIGuide.host + "/addExperiance"),
@@ -135,7 +159,7 @@ class AuthService {
     );
 
     if (response.statusCode == 201) {
-      Map<String,dynamic> json1 = json.decode(response.body);
+      Map<String, dynamic> json1 = json.decode(response.body);
       res = Experiance.fromJson(json1);
       return res;
     }
@@ -144,6 +168,30 @@ class AuthService {
     }
   }
 
+
+//list users
+  Future<List<User>> users() async {
+    List<User> list;
+
+    var response = await http.get(
+      Uri.parse(UIGuide.host + "/users"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+    );
+
+    if (response.statusCode == 201) {
+      var users = json.decode(response.body);
+
+      var rest = users as List;
+
+      list = rest.map<User>((json) => User.fromJson(json)).toList();
+
+      return list;
+
+    } else {
+      throw Exception('Failed to get users');
+    }
+  }
+
 }
-
-
