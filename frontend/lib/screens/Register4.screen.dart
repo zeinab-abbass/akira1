@@ -9,13 +9,26 @@ class Register4 extends StatefulWidget {
   static const String id = '/register4';
   static const routeName = '/register4';
 
-  Register4({Key? key}) : super(key: key);
+  final String name;
+  final String email;
+  final String username;
+  final String password;
+
+  Register4({Key? key, required this.name, required this.email, required this.username, required this.password}) : super(key: key);
 
   @override
-  _Register4State createState() => _Register4State();
+  _Register4State createState() => _Register4State(name, username, email, password);
 }
 
 class _Register4State extends State<Register4> with SingleTickerProviderStateMixin {
+
+  final String name;
+  final String username;
+  final String email;
+  final String password;
+  String phone = "";
+
+  _Register4State(this.name, this.username, this.email, this.password);
 
   late AnimationController _controller;
 
@@ -104,46 +117,63 @@ class _Register4State extends State<Register4> with SingleTickerProviderStateMix
       ),
     );
   }
-}
 
-Widget _inputField1() {
-  return Container(
-    decoration: BoxDecoration(
-      borderRadius: BorderRadius.all(
-        Radius.circular(50),
-      ),
-      boxShadow: [
-        BoxShadow(
-          color: Colors.black,
-          blurRadius: 25,
-          offset: Offset(0, 5),
-          spreadRadius: -25,
+  Widget _inputField1() {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(50),
         ),
-      ],
-    ),
-    margin: EdgeInsets.only(bottom: 20, top: 50),
-    child: InternationalPhoneNumberInput(
-      onInputChanged: (PhoneNumber value) {  },
-    ),
-  );
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black,
+            blurRadius: 25,
+            offset: Offset(0, 5),
+            spreadRadius: -25,
+          ),
+        ],
+      ),
+      margin: EdgeInsets.only(bottom: 20, top: 50),
+      child: InternationalPhoneNumberInput(
+        onInputChanged: (PhoneNumber value) {
+          phone = value.toString();
+        },
+      ),
+    );
+  }
+
+  Widget _loginbtn(context) {
+    // ignore: deprecated_member_use
+    return FlatButton(
+      onPressed: () => {
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => Register6(
+                  name: name,
+                  email: email,
+                  username: username,
+                  password: password,
+                  phone: phone
+              ),
+            )
+        ),
+       },
+      padding: EdgeInsets.symmetric(vertical: 18, horizontal: 100),
+      shape: new RoundedRectangleBorder(
+        borderRadius: new BorderRadius.circular(20.0),
+      ),
+      child: Text(
+        "NEXT",
+        style: GoogleFonts.montserrat(
+            fontSize: 25,
+            color: Colors.white,
+            letterSpacing: 0.168,
+            fontWeight: FontWeight.w500),
+      ),
+      color: UIGuide.COLOR2,
+    );
+  }
+
 }
 
-Widget _loginbtn(context) {
-  // ignore: deprecated_member_use
-  return FlatButton(
-    onPressed: () => { Navigator.of(context).pushNamed(Register6.routeName) },
-    padding: EdgeInsets.symmetric(vertical: 18, horizontal: 100),
-    shape: new RoundedRectangleBorder(
-      borderRadius: new BorderRadius.circular(20.0),
-    ),
-    child: Text(
-      "NEXT",
-      style: GoogleFonts.montserrat(
-          fontSize: 25,
-          color: Colors.white,
-          letterSpacing: 0.168,
-          fontWeight: FontWeight.w500),
-    ),
-    color: UIGuide.COLOR2,
-  );
-}

@@ -2,6 +2,7 @@ import 'package:email_auth/email_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:frontend/screens/Register2.screen.dart';
+import 'package:frontend/services/auth.service.dart';
 import 'package:frontend/utils/config.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -15,6 +16,10 @@ class Register1 extends StatefulWidget {
 }
 
 class _Register1State extends State<Register1> with SingleTickerProviderStateMixin {
+
+  AuthService _authService = new AuthService();
+
+  late String error= "false";
 
   late AnimationController _animationcontroller;
   final TextEditingController _emailcontroller = TextEditingController();
@@ -40,7 +45,7 @@ class _Register1State extends State<Register1> with SingleTickerProviderStateMix
   void sendOtp() async {
     EmailAuth.sessionName = "AKIRA";
     bool result =
-    await EmailAuth.sendOtp(receiverMail: _emailcontroller.value.text);
+    await EmailAuth.sendOtp(receiverMail: _emailcontroller.value.text.trim());
     if (result) {
       setState(() {
         submitValid = true;
@@ -49,6 +54,7 @@ class _Register1State extends State<Register1> with SingleTickerProviderStateMix
   }
 
   Widget _inputField1() {
+
     return Container(
       decoration: BoxDecoration(
         borderRadius: BorderRadius.all(
@@ -97,6 +103,7 @@ class _Register1State extends State<Register1> with SingleTickerProviderStateMix
             ),
             borderSide: BorderSide(color: Colors.white),
           ),
+          errorText: (error.compareTo("false")==0) ? null : error
         ),
       ),
     );
@@ -105,7 +112,14 @@ class _Register1State extends State<Register1> with SingleTickerProviderStateMix
   Widget _loginbtn(context) {
     // ignore: deprecated_member_use
     return FlatButton(
-      onPressed: (){ sendOtp(); displayBottomSheet(context); },
+      onPressed: (){
+        Future<bool> res = _authService.validate(_emailcontroller.text.toString().trim());
+        res.then((value) => value == false? error = "Email already taken; Enter another." : error = "false" );
+        if(error.compareTo("false") == 0) {
+          sendOtp();
+          displayBottomSheet(context);
+        }
+        },
       padding: EdgeInsets.symmetric(vertical: 18, horizontal: 100),
       shape: new RoundedRectangleBorder(
         borderRadius: new BorderRadius.circular(20.0),
@@ -121,8 +135,6 @@ class _Register1State extends State<Register1> with SingleTickerProviderStateMix
       color: UIGuide.COLOR2
     );
   }
-
-
 
   void displayBottomSheet(BuildContext context) {
     showModalBottomSheet(
@@ -204,8 +216,14 @@ class _Register1State extends State<Register1> with SingleTickerProviderStateMix
                         onPressed: () {
                           if (verify()) {
                             _pinPutController.clear();
-                            Navigator.of(context).pushNamed(
-                                Register2.routeName);
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Register2(
+                                      email: _emailcontroller.text.toString().trim()
+                                  ),
+                                )
+                            );
                           }
                         },
                         padding: EdgeInsets.symmetric(

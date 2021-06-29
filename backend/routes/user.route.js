@@ -8,5 +8,8 @@ router.get('/', (req,res) => {
 });
 
 router.post('/register', actions.register)
+router.post('/validate', actions.validate)
+router.post('/edit', actions.edit)
+router.post('/get', actions.get)
 
 module.exports = router;

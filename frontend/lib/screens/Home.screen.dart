@@ -1,7 +1,10 @@
+import 'dart:io';
 
 import 'package:flutter/material.dart';
+import 'package:frontend/models/User.model.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:image_picker/image_picker.dart';
 import 'UserProfile.screen.dart';
 
 class Home extends StatefulWidget {
@@ -9,15 +12,22 @@ class Home extends StatefulWidget {
   static const String id = '/home';
   static const routeName = '/home';
 
-  Home({Key? key}) : super(key: key);
+  final User user;
+  final String? imagePath;
+
+  Home({Key? key, required this.imagePath, required this.user}) : super(key: key);
 
   @override
-  _HomeState createState() => _HomeState();
+  _HomeState createState() => _HomeState(this.user, this.imagePath!);
 }
 
 class _HomeState extends State<Home>  {
 
   late final AnimationController _animationController;
+  final User user;
+  final String? imagepath;
+
+  _HomeState(this.user, this.imagepath);
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +41,7 @@ class _HomeState extends State<Home>  {
       ),
       drawer: Banner(
         location: BannerLocation.bottomEnd,
-        message: "basic",
+        message: user.type,
         textStyle: GoogleFonts.montserrat(
           fontSize: 12,
           fontWeight: FontWeight.w500,
@@ -51,9 +61,27 @@ class _HomeState extends State<Home>  {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        CircleAvatar(
-                          backgroundImage: AssetImage("assets/images/profile.png"),
-                          radius: 30.0,
+
+                        Container(
+                          width: 65,
+                          height: 65,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 4,
+                                  color: Theme.of(context).scaffoldBackgroundColor),
+                              boxShadow: [
+                                BoxShadow(
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    color: Colors.black.withOpacity(0.1),
+                                    offset: Offset(0, 10))
+                              ],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                fit: BoxFit.cover,
+                                image: FileImage(File(imagepath!) )
+                              )
+                          ),
                         ),
                       ],
                     ),
@@ -61,7 +89,7 @@ class _HomeState extends State<Home>  {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.start,
                       children: <Widget>[
-                        Text('Zeinab Abbas',
+                        Text(user.name,
                           style: GoogleFonts.montserrat(
                             fontSize: 19,
                             color: UIGuide.COLOR1,
@@ -76,7 +104,7 @@ class _HomeState extends State<Home>  {
                       mainAxisSize: MainAxisSize.max,
                       children: [
                         Text(
-                          "@zeinab20",
+                          "@"+user.username,
                           style: GoogleFonts.montserrat(
                             fontSize: 12,
                             color: UIGuide.COLOR3,
@@ -149,7 +177,17 @@ class _HomeState extends State<Home>  {
       child: InkWell(
         splashColor: Colors.grey.withOpacity(0.1),
         highlightColor: Colors.transparent,
-        onTap: () {  Navigator.of(context).pushNamed(UserProfile.routeName); },
+        onTap: () {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => UserProfile(
+                  user: user,
+                  imagePath: imagepath,
+                ),
+              )
+          );
+        },
 
         child: Stack(
           children: <Widget>[

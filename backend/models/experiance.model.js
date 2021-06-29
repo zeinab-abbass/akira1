@@ -9,7 +9,8 @@ const ExperianceSchema = mongoose.Schema({
     start_year : { type: String, required: [true, "Please fill this field"] },
     end_year : { type: String, required: [true, "Please fill this field"] },
     company : { type: String, required: [true, "Please fill this field"] },
-    description : { type: String }
+    description : { type: String },
+    user : { type: Schema.Types.ObjectId, ref: 'User' }
 });
 
 // to create data objects based on the schema we need model

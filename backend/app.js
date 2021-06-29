@@ -11,6 +11,7 @@ const router = express.Router()
 const io = require("socket.io")(http)
 
 const userRoutes = require('./routes/user.route');
+const experianceRoutes = require('./routes/experiance.route');
 
 app.use(cors());
 
@@ -24,13 +25,14 @@ app.use(express.json());
 
 //router
 app.use(userRoutes);
+app.use(experianceRoutes);
 
 // start server
 const port = '1000';
 app.set('port',port);
 
 
-http.listen(1000, '192.168.0.109');
+http.listen(1000, '192.168.137.36');
 
 app.use(function (err, req, res, next) {
   console.error(err.message);

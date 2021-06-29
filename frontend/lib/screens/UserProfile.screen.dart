@@ -1,5 +1,8 @@
 
+import 'dart:io';
+
 import 'package:flutter/material.dart';
+import 'package:frontend/models/User.model.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:hexcolor/hexcolor.dart';
@@ -10,13 +13,24 @@ class UserProfile extends StatefulWidget {
   static const String id = '/profile';
   static const routeName = '/profile';
 
-  UserProfile({Key? key}) : super(key: key);
+  final User user;
+  final String? imagePath;
+
+
+  UserProfile({Key? key, required this.user, this.imagePath}) : super(key: key);
 
   @override
-  _UserProfileState createState() => _UserProfileState();
+  _UserProfileState createState() => _UserProfileState(this.user, this.imagePath);
 }
 
 class _UserProfileState extends State<UserProfile> {
+
+  String? imagePath;
+  User user;
+
+  _UserProfileState(this.user, this.imagePath);
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -26,7 +40,7 @@ class _UserProfileState extends State<UserProfile> {
       body: Column(
         children: [
           Container(
-            height: MediaQuery.of(context).size.height * 0.45,
+            height: MediaQuery.of(context).size.height * 0.4,
             decoration:  BoxDecoration(
               color: UIGuide.COLOR1,
               borderRadius: BorderRadius.only(
@@ -42,11 +56,29 @@ class _UserProfileState extends State<UserProfile> {
                   children: [
                     Stack(
                       children: [
-                        CircleAvatar(
-                        backgroundImage: AssetImage("assets/images/profile.png"),
-                        radius: 50.0,
-                      ),
-                        Icon(Icons.circle, color: Colors.green,),
+                        Container(
+                          width: 100,
+                          height: 100,
+                          decoration: BoxDecoration(
+                              border: Border.all(
+                                  width: 4,
+                                  color: Theme.of(context).scaffoldBackgroundColor),
+                              boxShadow: [
+                                BoxShadow(
+                                    spreadRadius: 2,
+                                    blurRadius: 10,
+                                    color: Colors.black.withOpacity(0.1),
+                                    offset: Offset(0, 10)
+                                )
+                              ],
+                              shape: BoxShape.circle,
+                              image: DecorationImage(
+                                  fit: BoxFit.cover,
+                                  image: FileImage(File(imagePath!) )
+                              )
+                          ),
+                        ),
+                        Icon(Icons.circle, color: user.status == true ? Colors.green : Colors.red),
                       ]
                     )
                   ],
@@ -55,7 +87,7 @@ class _UserProfileState extends State<UserProfile> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: <Widget>[
-                    Text('Zeinab Abbas',
+                    Text(user.name,
                       style: GoogleFonts.montserrat(
                         fontSize: 22,
                         color: Colors.white,
@@ -70,7 +102,7 @@ class _UserProfileState extends State<UserProfile> {
                   children: <Widget>[
                     Icon(Icons.location_on, color: Colors.white, size: 15,),
                     SizedBox(width: 5,),
-                    Text('Lebanon, Beirut',
+                    Text(user.location,
                       style: GoogleFonts.montserrat(
                         fontSize: 15,
                         color: Colors.white,
@@ -85,7 +117,7 @@ class _UserProfileState extends State<UserProfile> {
                   children: <Widget>[
                     Icon(Icons.phone_sharp, color: Colors.white, size: 15,),
                     SizedBox(width: 5,),
-                    Text('+961 71 511 828',
+                    Text(user.phone,
                       style: GoogleFonts.montserrat(
                         fontSize: 15,
                         color: Colors.white,
@@ -99,14 +131,31 @@ class _UserProfileState extends State<UserProfile> {
             ),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(vertical: (MediaQuery.of(context).size.height / 100) * 5,),
+            padding: EdgeInsets.symmetric(vertical: (MediaQuery.of(context).size.height / 100) * 1,),
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical:10),
+                  padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width / 100) * 5, vertical: (MediaQuery.of(context).size.height / 100) * 1,),
                   child: FlatButton(
-                    onPressed: () => {  },
+                    onPressed: () => {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: Center(child: const Text('Interests')),
+                          content: ListView.builder(
+                              itemCount: user.interests.length,
+                              itemBuilder: (BuildContext ctxt, int index) {
+                                return Container(
+                                  color: Colors.grey,
+                                  width: 50,
+                                  height: 50,
+                                  child: Text(user.interests[index]),
+                                );
+                              })
+                          ),
+                      ),
+                    },
                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 60),
                     shape: new RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(15.0),
@@ -122,8 +171,7 @@ class _UserProfileState extends State<UserProfile> {
                               color: Colors.white,
                               letterSpacing: 0.168,
                               fontWeight: FontWeight.w400),
-                        ),
-                         Icon(Icons.arrow_forward_ios_sharp, color: Colors.white, size: 20,)
+                        )
                       ],
                     ),
                     color: HexColor("#8C0E0F").withOpacity(0.7),
@@ -131,9 +179,27 @@ class _UserProfileState extends State<UserProfile> {
                 ),
 
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical:10),
+                  padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width / 100) * 5, vertical: (MediaQuery.of(context).size.height / 100) * 1,),
                   child: FlatButton(
-                    onPressed: () => {  },
+                    onPressed: () => {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('AlertDialog Title'),
+                          content: const Text('AlertDialog description'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    },
                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 60),
                     shape: new RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(15.0),
@@ -150,16 +216,78 @@ class _UserProfileState extends State<UserProfile> {
                               letterSpacing: 0.168,
                               fontWeight: FontWeight.w400),
                         ),
-                        Icon(Icons.arrow_forward_ios_sharp, color: Colors.white, size: 20,)
                       ],
                     ),
                     color: HexColor("#DBA858"),
                   ),
                 ),
+
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical:10),
+                  padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width / 100) * 5, vertical: (MediaQuery.of(context).size.height / 100) * 1,),
                   child: FlatButton(
-                    onPressed: () => {  },
+                    onPressed: () => {
+                      showDialog<String>(
+                        context: context,
+                        builder: (BuildContext context) => AlertDialog(
+                          title: const Text('AlertDialog Title'),
+                          content: const Text('AlertDialog description'),
+                          actions: <Widget>[
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'Cancel'),
+                              child: const Text('Cancel'),
+                            ),
+                            TextButton(
+                              onPressed: () => Navigator.pop(context, 'OK'),
+                              child: const Text('OK'),
+                            ),
+                          ],
+                        ),
+                      ),
+                    },
+                    padding: EdgeInsets.symmetric(vertical: 30, horizontal: 60),
+                    shape: new RoundedRectangleBorder(
+                      borderRadius: new BorderRadius.circular(15.0),
+                    ),
+                    child: Row(
+                      children: [
+                        Icon(Icons.language_outlined, color: Colors.white),
+                        SizedBox(width: 10,),
+                        Text(
+                          "Languages",
+                          style: GoogleFonts.montserrat(
+                              fontSize: 20,
+                              color: Colors.white,
+                              letterSpacing: 0.168,
+                              fontWeight: FontWeight.w400),
+                        ),
+                      ],
+                    ),
+                    color: HexColor("#ADC9BA"),
+                  ),
+                ),
+
+                Padding(
+                  padding: EdgeInsets.symmetric(horizontal: (MediaQuery.of(context).size.width / 100) * 5, vertical: (MediaQuery.of(context).size.height / 100) * 1,),
+                  child: FlatButton(
+                      onPressed: () => {
+                        showDialog<String>(
+                          context: context,
+                          builder: (BuildContext context) => AlertDialog(
+                            title: const Text('AlertDialog Title'),
+                            content: const Text('AlertDialog description'),
+                            actions: <Widget>[
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'Cancel'),
+                                child: const Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () => Navigator.pop(context, 'OK'),
+                                child: const Text('OK'),
+                              ),
+                            ],
+                          ),
+                        ),
+                      },
                     padding: EdgeInsets.symmetric(vertical: 30, horizontal: 60),
                     shape: new RoundedRectangleBorder(
                       borderRadius: new BorderRadius.circular(15.0),
@@ -176,10 +304,9 @@ class _UserProfileState extends State<UserProfile> {
                               letterSpacing: 0.168,
                               fontWeight: FontWeight.w400),
                         ),
-                        Icon(Icons.arrow_forward_ios_sharp, color: Colors.white, size: 20,)
                       ],
                     ),
-                    color: HexColor("#ADC9BA"),
+                    color: Colors.blueGrey[100]
                   ),
                 ),
               ],
@@ -191,7 +318,15 @@ class _UserProfileState extends State<UserProfile> {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          Navigator.of(context).pushNamed(EditProfile.routeName);
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => EditProfile(
+                    user: user,
+                    imagePath: imagePath
+                ),
+              )
+          );
         },
         child: const Icon(Icons.edit, color: Colors.white,),
         backgroundColor: UIGuide.COLOR1,

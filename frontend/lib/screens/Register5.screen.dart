@@ -1,8 +1,9 @@
 
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:frontend/models/User.model.dart';
+import 'package:frontend/services/auth.service.dart';
 import 'package:frontend/utils/config.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,13 +18,22 @@ class Register5 extends StatefulWidget {
   static const String id = '/register5';
   static const routeName = '/register5';
 
-  Register5({Key? key}) : super(key: key);
+  final String name;
+  final String email;
+  final String username;
+  final String password;
+  final String phone;
+  final String location;
+
+  Register5({Key? key, required this.name, required this.email, required this.username, required this.password, required this.phone, required this.location}) : super(key: key);
 
   @override
-  _Register5State createState() => _Register5State();
+  _Register5State createState() => _Register5State(name, email, username, password, phone, location);
 }
 
 class _Register5State extends State<Register5> with SingleTickerProviderStateMixin {
+
+  AuthService _authService = AuthService();
 
   late AnimationController _controller;
   PickedFile? _imageFile;
@@ -31,58 +41,23 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
   final _picker = ImagePicker();
   String? _retrieveDataError;
 
+  String name;
+  String email;
+  String username;
+  String password;
+  String phone;
+  String location;
+
+  String? imagepath;
+
+  _Register5State(this.name, this.email, this.username, this.password, this.phone, this.location);
+
+
   @override
   void initState() {
     super.initState();
 
     _controller = AnimationController(vsync: this, duration: Duration(seconds: 2))..repeat();
-  }
-
-  void _onImageButtonPressed(ImageSource source, {BuildContext? context}) async {
-    try {
-              final pickedFile = await _picker.getImage(
-                source: source,
-              );
-              setState(() {
-                _imageFile = pickedFile;
-              });
-            } catch (e) {
-              setState(() {
-                _pickImageError = e;
-              });
-            }
-  }
-
-  Widget _previewImage() {
-    final Text? retrieveError = _getRetrieveErrorWidget();
-    if (retrieveError != null) {
-      return retrieveError;
-    }
-    if (_imageFile != null) {
-        return Semantics(
-            child: Image.file(File(_imageFile!.path)),
-            label: 'image_picker_example_picked_image');
-
-    } else if (_pickImageError != null) {
-      return Text(
-        'Pick image error: $_pickImageError',
-        textAlign: TextAlign.center,
-      );
-    } else {
-      return const Text(
-        'You have not yet picked an image.',
-        textAlign: TextAlign.center,
-      );
-    }
-  }
-
-  Text? _getRetrieveErrorWidget() {
-    if (_retrieveDataError != null) {
-      final Text result = Text(_retrieveDataError!);
-      _retrieveDataError = null;
-      return result;
-    }
-    return null;
   }
 
 
@@ -131,7 +106,7 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
                         mainAxisAlignment: MainAxisAlignment.start,
                         children: [
                           FlatButton(
-                            onPressed: () => { displayBottomSheet(context) },
+                            onPressed: () => {  },
                             padding: EdgeInsets.symmetric(vertical: 15, horizontal: 50),
                             shape: new RoundedRectangleBorder(
                               borderRadius: new BorderRadius.circular(15.0),
@@ -158,7 +133,7 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
                             child: FloatingActionButton(
                               onPressed: () {
                                 _onImageButtonPressed(ImageSource.gallery, context: context);
-                                  Navigator.of(context).pushNamed(Home.routeName);
+
                               },
                               heroTag: 'image0',
                               tooltip: 'Pick Image from gallery',
@@ -170,9 +145,9 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
                           ),
                          SizedBox(width: 10,),
                          FloatingActionButton(
-                              onPressed: () {
+                              onPressed: () async {
                                 _onImageButtonPressed(ImageSource.camera, context: context);
-                                Navigator.of(context).pushNamed(Home.routeName);
+
                               },
                               heroTag: 'image1',
                               tooltip: 'Take a Photo',
@@ -214,6 +189,32 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
         ),
       ],
     );
+  }
+
+  void _onImageButtonPressed(ImageSource source, {BuildContext? context}) async {
+    try {
+      final pickedFile = await _picker.getImage(
+        source: source,
+      );
+      setState(() async {
+        _imageFile = pickedFile;
+        imagepath = pickedFile !=null ? pickedFile.path : null;
+        User user = await _authService.register(name, username, email, password, phone, location);
+        Navigator.push(
+            context!,
+            MaterialPageRoute(
+              builder: (context) => Home(
+                user: user,
+                imagePath: imagepath,
+              ),
+            )
+        );
+      });
+    } catch (e) {
+      setState(() {
+        _pickImageError = e;
+      });
+    }
   }
 
 
@@ -272,7 +273,7 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
                     mainAxisSize: MainAxisSize.max,
                     children: [
                       Text(
-                        "Zeinab Abbas,",
+                        name,
                         style: GoogleFonts.montserrat(
                           fontSize: 25,
                           color: UIGuide.COLOR3,

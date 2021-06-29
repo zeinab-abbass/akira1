@@ -14,20 +14,33 @@ class Register6 extends StatefulWidget {
   static const String id = '/register6';
   static const routeName = '/register6';
 
+  final String name;
+  final String email;
+  final String username;
+  final String password;
+  final String phone;
 
-  Register6({Key? key}) : super(key: key);
+  Register6({Key? key, required this.name, required this.email, required this.username, required this.password, required this.phone}) : super(key: key);
 
   @override
-  _Register6State createState() => _Register6State();
+  _Register6State createState() => _Register6State(name, email, username, password, phone);
 }
 
 class _Register6State extends State<Register6> with SingleTickerProviderStateMixin {
 
+  String name;
+  String email;
+  String username;
+  String password;
+  String phone;
+
   late AnimationController _animationcontroller;
-  final TextEditingController _emailcontroller = TextEditingController();
+  final TextEditingController _locationcontroller = TextEditingController();
   bool submitValid = false;
   final TextEditingController _pinPutController = TextEditingController();
   final FocusNode _pinPutFocusNode = FocusNode();
+
+  _Register6State(this.name, this.email, this.username, this.password, this.phone);
 
   @override
   void initState() {
@@ -53,7 +66,7 @@ class _Register6State extends State<Register6> with SingleTickerProviderStateMix
       ),
       margin: EdgeInsets.only(bottom: 20, top: 50),
       child: TextField(
-        controller: _emailcontroller,
+        controller: _locationcontroller,
         style: GoogleFonts.poppins(
             fontSize: 20,
             color: Colors.black,
@@ -93,7 +106,21 @@ class _Register6State extends State<Register6> with SingleTickerProviderStateMix
   Widget _loginbtn(context) {
     // ignore: deprecated_member_use
     return FlatButton(
-        onPressed: (){ Navigator.of(context).pushNamed(Register5.routeName); },
+        onPressed: (){
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Register5(
+                    name: name,
+                    email: email,
+                    username: username,
+                    password: password,
+                    phone: phone,
+                    location: _locationcontroller.text.toString().trim()
+                ),
+              )
+          );
+        },
         padding: EdgeInsets.symmetric(vertical: 18, horizontal: 100),
         shape: new RoundedRectangleBorder(
           borderRadius: new BorderRadius.circular(20.0),

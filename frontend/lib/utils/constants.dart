@@ -19,9 +19,6 @@ class UIGuide {
 //  static final String reddit_logo = "assets/images/reddit_logo.png";
 //  static final String google = "assets/images/google.png";
 
-  // Videos
-  static final String backgroundvid = "assets/videos/redditvid.mp4";
-
   // Global Colors
   static const Color WHITE = Colors.white;
   static const Color BLACK = Colors.black;
@@ -31,4 +28,8 @@ class UIGuide {
   static Color COLOR1 = Color(0xff205072);
   static Color COLOR2 = Color(0xff205072);
   static Color COLOR3 = Colors.grey;
+
+//host
+  static const String host = "http://192.168.137.36192.168.137.36:1000";
 }
+
