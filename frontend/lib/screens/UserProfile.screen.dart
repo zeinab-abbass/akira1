@@ -74,7 +74,7 @@ class _UserProfileState extends State<UserProfile> {
                               shape: BoxShape.circle,
                               image: DecorationImage(
                                   fit: BoxFit.cover,
-                                  image: AssetImage("assets/images/profile.png")
+                                  image: FileImage(File(imagePath!) )
                               )
                           ),
                         ),
@@ -174,7 +174,7 @@ class _UserProfileState extends State<UserProfile> {
                         )
                       ],
                     ),
-                    color: HexColor("#8C0E0F").withOpacity(0.7),
+                    color: HexColor("#ADC9BA"),
                   ),
                 ),
 
@@ -262,7 +262,7 @@ class _UserProfileState extends State<UserProfile> {
                         ),
                       ],
                     ),
-                    color: HexColor("#ADC9BA"),
+                    color: HexColor("#8C0E0F").withOpacity(0.6),
                   ),
                 ),
 
@@ -306,7 +306,7 @@ class _UserProfileState extends State<UserProfile> {
                         ),
                       ],
                     ),
-                    color: Colors.blueGrey[100]
+                    color: Colors.blueGrey[200]
                   ),
                 ),
               ],

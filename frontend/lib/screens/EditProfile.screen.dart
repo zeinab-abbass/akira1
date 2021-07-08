@@ -753,7 +753,7 @@ class _EditProfileState extends State<EditProfile> {
                 children: [
                   Text("2019-2021"),
                   Text("ASCII-AZKATECH"),
-                  Text("haaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaafaaaaaaaaaaaaaaaaa")
+                  Text("h")
                 ],
               )
             );

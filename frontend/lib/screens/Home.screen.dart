@@ -6,7 +6,11 @@ import 'package:frontend/services/auth.service.dart';
 import 'package:frontend/utils/constants.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
+import 'Splash.screen.dart';
 import 'UserProfile.screen.dart';
+import 'User.screen.dart';
+import 'Settings.screen.dart';
+import 'Chats.screen.dart';
 
 class Home extends StatefulWidget {
 
@@ -22,7 +26,7 @@ class Home extends StatefulWidget {
   _HomeState createState() => _HomeState(this.user, this.imagePath!);
 }
 
-class _HomeState extends State<Home>  {
+class _HomeState extends State<Home> with SingleTickerProviderStateMixin {
 
   late final AnimationController _animationController;
   final User user;
@@ -30,21 +34,68 @@ class _HomeState extends State<Home>  {
   AuthService _authService = new AuthService();
   
   List<User> users = [];
-  
+  List<User> usersByLocation = [];
+
+  int _selectedIndex1 = 0;
+  int _selectedIndex = 0;
+
+
+  _onSelected(int index) {
+    setState(() => _selectedIndex1 = index);
+  }
+
+
+  TabController? _TabController;
+
+  _HomeState(this.user, this.imagepath);
+
   @override
   void initState() {
     // TODO: implement initState
     super.initState();
-
+    _TabController = TabController(length: 2, vsync: this, initialIndex: 0);
   }
 
-  _HomeState(this.user, this.imagepath);
+
+  static const TextStyle optionStyle = TextStyle(fontSize: 30, fontWeight: FontWeight.bold);
+
+  static const List<String> _list = ["All", "Location", "Hobbies", "Interests", "Languages"];
+
+  bool clicked = false;
+
+  static const List<Widget> _widgetOptions = <Widget>[
+    Text(
+      'Index 0: Home',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 1: Search',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 2: Favorites',
+      style: optionStyle,
+    ),
+    Text(
+      'Index 3: Account',
+      style: optionStyle,
+    ),
+
+  ];
+
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
 
 
   @override
   Widget build(BuildContext context) {
 
     _authService.users().then((value) => users = value );
+    _authService.usersByLocation(user.location).then((value) => usersByLocation = value );
 
     return Scaffold(
       backgroundColor: Colors.white,
@@ -52,10 +103,245 @@ class _HomeState extends State<Home>  {
         backgroundColor: Colors.white,
         elevation: 0,
         iconTheme: IconThemeData(color: UIGuide.COLOR1), //add this line here
-        actions: [
-          IconButton(icon: Icon(Icons.search_sharp), onPressed: (){})
-        ],
       ),
+
+      body:
+      SingleChildScrollView(
+          physics: AlwaysScrollableScrollPhysics(),
+          child: Stack(
+              children: [
+                Container(
+                  padding: EdgeInsets.only(top: (MediaQuery.of(context).size.height / 100) * 3, left: (MediaQuery.of(context).size.width / 100) * 10, right: (MediaQuery.of(context).size.width / 100) * 10 ),
+                  color: Colors.white,
+                  width: double.infinity,
+
+              child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          "Welcome!",
+                          style: GoogleFonts.poppins(
+                            fontSize: 25,
+                            color: Color(0xff205072),
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 2,),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.max,
+                      children: [
+                        Text(
+                          "Find your friends",
+                          style: GoogleFonts.poppins(
+                            fontSize: 20,
+                            color: UIGuide.COLOR3,
+                            fontWeight: FontWeight.w500,
+                          ),
+                        )
+                      ],
+                    ),
+                    SizedBox(height: 10,),
+
+                Container(
+                  height: (MediaQuery.of(context).size.height / 100) * 10,
+                  width: (MediaQuery.of(context).size.width / 100) * 100,
+
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    scrollDirection: Axis.horizontal,
+                    itemCount: _list.length,
+                    itemBuilder: (BuildContext context, int index){
+                      return Column(
+                        children: [
+                         Padding(
+                           padding: const EdgeInsets.only(right: 50, top: 10),
+                            child:
+                                Column(
+                                  children: [
+                                    InkWell(
+                                      child: Text(
+                                        _list[index],
+                                        style: GoogleFonts.poppins(
+                                          fontSize: 15,
+                                          color: _selectedIndex1 == index
+                                            ? UIGuide.COLOR2
+                                            : Colors.blueGrey,
+                                          fontWeight: _selectedIndex1 == index ? FontWeight.bold : FontWeight.w500,
+                                        ),
+                                      ),
+                                      onTap: (){
+                                        setState(() {
+                                          _selectedIndex1 = index;
+                                        });
+                                      },
+                                    ),
+                                  ],
+                                ),
+                           ),
+                        ],
+                      );
+                    },
+                  ),
+                ),
+                    SingleChildScrollView(
+                      child: Stack(
+                        children: [
+                          Container(
+                          width: (MediaQuery.of(context).size.width / 100) * 100,
+                          child: (_selectedIndex1 == 0) ?
+                          GridView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.vertical,
+                            itemCount: users.length,
+                            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                              crossAxisCount: 2,
+                            ),
+                            itemBuilder: (BuildContext context, int index) {
+                              return InkWell(
+                                child: Card(
+                                  color: Colors.transparent,
+                                  elevation: 0,
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(20),
+                                      image: DecorationImage(
+                                        image: AssetImage("assets/images/profile.png"),
+                                        fit: BoxFit.cover,
+                                      ),
+                                    ),
+                                   child: Padding(
+                                     padding: const EdgeInsets.only(top: 120),
+                                     child: Column(
+                                       children: [
+                                         Text(
+                                           user.name,
+                                           style: GoogleFonts.poppins(
+                                             fontSize: 15,
+                                             color: Colors.white,
+                                             fontWeight: FontWeight.bold,
+                                           ),
+                                         )
+                                       ],
+                                     ),
+                                   )
+                                  ),
+                                ),
+                                onTap: (){
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => UserP(
+                                          user: user,
+                                        ),
+                                      )
+                                  );
+                                },
+                              );
+                            },
+                          ) : null,
+                        ),
+
+                          Container(
+                            width: (MediaQuery.of(context).size.width / 100) * 100,
+                            child: (_selectedIndex1 == 1) ?
+                            GridView.builder(
+                              shrinkWrap: true,
+                              scrollDirection: Axis.vertical,
+                              itemCount: usersByLocation.length,
+                              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                                crossAxisCount: 2,
+                              ),
+                              itemBuilder: (BuildContext context, int index) {
+                                return InkWell(
+                                  child: Card(
+                                    color: Colors.transparent,
+                                    elevation: 0,
+                                    child: Container(
+                                        decoration: BoxDecoration(
+                                          borderRadius: BorderRadius.circular(20),
+                                          image: DecorationImage(
+                                            image: AssetImage("assets/images/profile.png"),
+                                            fit: BoxFit.cover,
+                                          ),
+                                        ),
+                                        child: Padding(
+                                          padding: const EdgeInsets.only(top: 120),
+                                          child: Column(
+                                            children: [
+                                              Text(
+                                                user.name,
+                                                style: GoogleFonts.poppins(
+                                                  fontSize: 15,
+                                                  color: Colors.white,
+                                                  fontWeight: FontWeight.bold,
+                                                ),
+                                              )
+                                            ],
+                                          ),
+                                        )
+                                    ),
+                                  ),
+                                  onTap: (){
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) => UserP(
+                                            user: user,
+                                          ),
+                                        )
+                                    );
+                                  },
+                                );
+                              },
+                            ) : null,
+
+                          ),
+                      ]
+                      ),
+                    )
+                  ],
+                ),
+              ),
+          ]
+
+      ),
+      ),
+
+      //bottom navigation bar
+      bottomNavigationBar: BottomNavigationBar(
+        //when added we can add more than 3 items in bar
+        type: BottomNavigationBarType.fixed,
+        items: const <BottomNavigationBarItem>[
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: 'Home',
+
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.search),
+            label: 'Search',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.favorite),
+            label: 'Favorites',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.account_circle_outlined),
+            label: 'Account',
+          ),
+
+        ],
+        currentIndex: _selectedIndex,
+        selectedItemColor: Color(0xFF0D47A1),
+        onTap: _onItemTapped,
+      ),
+
       drawer: Banner(
         location: BannerLocation.bottomEnd,
         message: user.type,
@@ -141,27 +427,301 @@ class _HomeState extends State<Home>  {
 
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30, top: 10 ),
-                child: inkwell(Item(icon: Icons.home_sharp, label: "Home")),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.grey.withOpacity(0.1),
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfile(
+                              user: user,
+                              imagePath: imagepath,
+                            ),
+                          )
+                      );
+                    },
+
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: 6.0,
+                                height: 46.0,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Icon(Icons.home_sharp, color: UIGuide.COLOR1),
+
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Text(
+                                "Home",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: UIGuide.COLOR1
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+
+                            ],
+                          ),
+
+                        ),
+
+                      ],
+                    ),
+                  ),
+                )
               ),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: inkwell(Item(icon: Icons.account_circle_sharp, label: "Profile")),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.grey.withOpacity(0.1),
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfile(
+                              user: user,
+                              imagePath: imagepath,
+                            ),
+                          )
+                      );
+                    },
+
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: 6.0,
+                                height: 46.0,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Icon(Icons.account_circle, color: UIGuide.COLOR1),
+
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Text(
+                                "Profile",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: UIGuide.COLOR1
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+
+                            ],
+                          ),
+
+                        ),
+
+                      ],
+                    ),
+                  ),
+                )
               ),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: inkwell(Item(icon: Icons.message, label: "Messages")),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.grey.withOpacity(0.1),
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Chats(
+                              user: user,
+                            ),
+                          )
+                      );
+                    },
+
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: 6.0,
+                                height: 46.0,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Icon(Icons.message_rounded, color: UIGuide.COLOR1),
+
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Text(
+                                "Messages",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: UIGuide.COLOR1
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+
+                            ],
+                          ),
+
+                        ),
+
+                      ],
+                    ),
+                  ),
+                )
               ),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: inkwell(Item(icon: Icons.notifications_sharp, label: "Notifications")),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.grey.withOpacity(0.1),
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfile(
+                              user: user,
+                              imagePath: imagepath,
+                            ),
+                          )
+                      );
+                    },
+
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: 6.0,
+                                height: 46.0,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Icon(Icons.notifications_sharp, color: UIGuide.COLOR1),
+
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Text(
+                                "Notifications",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: UIGuide.COLOR1
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+
+                            ],
+                          ),
+
+                        ),
+
+                      ],
+                    ),
+                  ),
+                )
               ),
 
               Padding(
                 padding: const EdgeInsets.only(left: 30, right: 30, bottom: 50),
-                child: inkwell(Item(icon: Icons.settings, label: "Settings")),
+                child:  Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.grey.withOpacity(0.1),
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Settings(
+                              user: user,
+                              imagePath: imagepath,
+                            ),
+                          )
+                      );
+                    },
+
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: 6.0,
+                                height: 46.0,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Icon(Icons.settings, color: UIGuide.COLOR1),
+
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Text(
+                                "Settings",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: UIGuide.COLOR1
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+
+                            ],
+                          ),
+
+                        ),
+
+                      ],
+                    ),
+                  ),
+                )
               ),
 
               Padding(
@@ -171,12 +731,122 @@ class _HomeState extends State<Home>  {
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: inkwell(Item(icon: Icons.share, label: "Tell a Friend")),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.grey.withOpacity(0.1),
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfile(
+                              user: user,
+                              imagePath: imagepath,
+                            ),
+                          )
+                      );
+                    },
+
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: 6.0,
+                                height: 46.0,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Icon(Icons.share, color: UIGuide.COLOR1),
+
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Text(
+                                "Tell a Friend",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: UIGuide.COLOR1
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+
+                            ],
+                          ),
+
+                        ),
+
+                      ],
+                    ),
+                  ),
+                )
               ),
 
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: inkwell(Item(icon: Icons.help, label: "Help and Feedback")),
+                child:Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    splashColor: Colors.grey.withOpacity(0.1),
+                    highlightColor: Colors.transparent,
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => UserProfile(
+                              user: user,
+                              imagePath: imagepath,
+                            ),
+                          )
+                      );
+                    },
+
+                    child: Stack(
+                      children: <Widget>[
+                        Container(
+                          padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
+                          child: Row(
+                            children: <Widget>[
+                              Container(
+                                width: 6.0,
+                                height: 46.0,
+                              ),
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Icon(Icons.help, color: UIGuide.COLOR1),
+
+                              const Padding(
+                                padding: EdgeInsets.all(4.0),
+                              ),
+
+                              Text(
+                                "Help and Feedback",
+                                style: TextStyle(
+                                    fontWeight: FontWeight.w500,
+                                    fontSize: 16,
+                                    color: UIGuide.COLOR1
+                                ),
+                                textAlign: TextAlign.left,
+                              ),
+
+                            ],
+                          ),
+
+                        ),
+
+                      ],
+                    ),
+                  ),
+                )
               ),
 
             ],
@@ -184,177 +854,11 @@ class _HomeState extends State<Home>  {
         ),
       ),
 
-      body: SafeArea(
-        child: Container(
-          child: Padding(
-            padding: const EdgeInsets.all(20.0),
-            child: Column(
-              children: <Widget>[
-                Container(
-                  width: double.infinity,
-                  height: 200,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(20),
-                      gradient: LinearGradient(
-                        begin: Alignment.bottomRight,
-                        colors: [
-                          Colors.black.withOpacity(.4),
-                          Colors.black.withOpacity(.2),
-                        ],
-                      ),
-                    ),
-                    child: Column(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: <Widget>[
-                        Text(
-                          'Get more Features',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 30,
-                            fontFamily: 'Sans-serif',
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                        Container(
-                          height: 50,
-                          margin: EdgeInsets.symmetric(horizontal: 40),
-                          decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(10)),
-                          child: Center(
-                            child: Text(
-                              ' Upgrade',
-                              style: TextStyle(
-                                color: Colors.black87,
-                                fontSize: 20,
-                                fontWeight: FontWeight.bold,
-                                fontFamily: 'Sans-serif',
-                              ),
-                            ),
-                          ),
-                        ),
-                        SizedBox(height: 30),
-                      ],
-                    ),
-                  ),
-                ),
-                SizedBox(height: 20),
-                Expanded(
-                  child: GridView.builder(
-                    itemCount: users.length,
-                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                      crossAxisCount: 2,
-                      crossAxisSpacing: 10,
-                      mainAxisSpacing: 10,
-                    ),
-                    itemBuilder: (BuildContext context, int index) {
-                      return Card(
-                        color: Colors.transparent,
-                        elevation: 0,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(20),
-                            image: DecorationImage(
-                              image: AssetImage("assets/images/profile.png"),
-                              fit: BoxFit.cover,
-                            ),
-                          ),
-                          child: Transform.translate(
-                            offset: Offset(60, -60),
-                            child: Container(
-                              // width: 30,
-                              // height: 40,
-                              margin: EdgeInsets.symmetric(
-                                  horizontal: 72, vertical: 70),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white),
-                              child: Icon(
-                                Icons.bookmark_border,
-                                size: 20,
-                              ),
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                ),
-                )
-              ],
-
-            ),
-          ),
-        ),
-      ),
 
     );
 
   }
 
-  Widget inkwell(Item item) {
-
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        splashColor: Colors.grey.withOpacity(0.1),
-        highlightColor: Colors.transparent,
-        onTap: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => UserProfile(
-                  user: user,
-                  imagePath: imagepath,
-                ),
-              )
-          );
-        },
-
-        child: Stack(
-          children: <Widget>[
-            Container(
-              padding: const EdgeInsets.only(top: 8.0, bottom: 8.0),
-              child: Row(
-                children: <Widget>[
-                  Container(
-                    width: 6.0,
-                    height: 46.0,
-                  ),
-                  const Padding(
-                    padding: EdgeInsets.all(4.0),
-                  ),
-
-                  Icon(item.icon, color: UIGuide.COLOR1),
-
-                  const Padding(
-                    padding: EdgeInsets.all(4.0),
-                  ),
-
-                  Text(
-                    item.label,
-                    style: TextStyle(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 16,
-                      color: UIGuide.COLOR1
-                    ),
-                    textAlign: TextAlign.left,
-                  ),
-
-                ],
-              ),
-
-            ),
-
-          ],
-        ),
-      ),
-    );
-  }
 
 }
 
@@ -364,3 +868,4 @@ class Item{
 
    Item({required this.icon, required this.label});
 }
+

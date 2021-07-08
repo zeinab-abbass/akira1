@@ -58,36 +58,40 @@ class _SplashState extends State<Splash> with SingleTickerProviderStateMixin{
   @override
   Widget build(BuildContext context) {
     return
-      Container(
-            padding: EdgeInsets.symmetric(vertical: (MediaQuery.of(context).size.height / 100) * 30, horizontal: 50),
-            color: Colors.white,
-            width: double.infinity,
-            height: MediaQuery.of(context).size.height,
-            child: Column(
-                children: <Widget>[
+      Column(
+        children: [
+          Container(
+                color: Colors.white,
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height,
+                child: Column(
+                    children: <Widget>[
 
-                  Center(
-                      child: Container(
-                        alignment: AlignmentDirectional.center,
-                        child: Container(
-                          margin: EdgeInsets.only(top: 50.0),
-                          child: Transform.rotate(
-                            angle: -2 * 3.14 * _animation.value / 200,
-                            child: Image.asset(
-                             "assets/images/network.png",
-                              fit: BoxFit.fitHeight,
-                              width: _animation.value/2,
-                              height: _animation.value/2,
-                              color: UIGuide.COLOR1,
+                      Center(
+                          child: Container(
+                            alignment: AlignmentDirectional.center,
+                            child: Container(
+                              margin: EdgeInsets.only(top: 50.0),
+                              child: Transform.rotate(
+                                angle: -2 * 3.14 * _animation.value / 200,
+                                child: Image.asset(
+                                 "assets/images/network.png",
+                                  fit: BoxFit.fitHeight,
+                                  width: _animation.value/2,
+                                  height: _animation.value/2,
+                                  color: UIGuide.COLOR1,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+
                       ),
 
-                  )
+                    ],
+                  ),
+          ),
 
-                ],
-              ),
+        ],
       );
   }
 }

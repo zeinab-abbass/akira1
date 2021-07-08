@@ -27,12 +27,41 @@ app.use(express.json());
 app.use(userRoutes);
 app.use(experianceRoutes);
 
+var clients = {};
+
+io.on("connection", (socket) => {
+    console.log("Socket connected")
+    console.log(socket.id, " has joined ")
+
+    //listen on signin event
+    socket.on("signin", (id) => {
+     console.log("userid " + id);
+     clients[id] = socket;
+    })
+
+    //listen on message event
+    socket.on("message", (msg) => {
+        console.log(msg);
+        let targetId = msg.targetId;
+        let sourceId = msg.sourceId;
+        if(clients[targetId]) clients[targetId].emit("message", msg);
+    })
+
+     socket.on("image", (msg) => {
+            console.log(msg);
+            let targetId = msg.targetId;
+            let sourceId = msg.sourceId;
+            if(clients[targetId]) clients[targetId].emit("image", msg);
+        })
+})
+
+
 // start server
 const port = '1000';
 app.set('port',port);
 
 
-http.listen(1000, '192.168.137.36');
+http.listen(1000, '192.168.43.25');
 
 app.use(function (err, req, res, next) {
   console.error(err.message);

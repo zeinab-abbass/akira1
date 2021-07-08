@@ -25,6 +25,7 @@ exports.register = async (req, res, next) => {
                 phone: req.body.phone,
                 location: req.body.location,
                 password: hash,
+                photo: req.body.photo
             })
             User.findOne({
                 email: req.body.email
@@ -227,3 +228,89 @@ exports.users = async (req, res, next) => {
            }
        })
  }
+
+ //get users with same location
+exports.usersByLocation = async (req, res, next) => {
+       let users = User.find({ location: req.body.location }).exec((error, data) => {
+           if (error) {
+                return res.status(500).send("There was a problem finding the data");
+           }
+           else  if (!data) return res.status(404).send("No data found.");
+           else {
+                return res.status(201).send(data);
+           }
+       })
+ }
+
+
+//edit user status
+exports.editStatus = async (req, res, next) => {
+
+              User.findOne({
+                  email: req.body.email
+              })
+              .then( user1 => {
+                  if (user1) {
+                        User.updateOne( { email: req.body.email },
+                                        { $set:     { status: req.body.status ,
+                                                    }
+                                        }
+                                    ).exec((error, data) => {
+
+                                      if (error) {
+                                        console.log(error)
+                                        return res.status(500).send("There was a problem finding the user.");
+                                      } else {
+                                        return res.status(201).json(
+                                          {
+                                            massage: 'user status updated successfully!',
+                                            result: data
+                                          });
+                                      }
+                                   });
+                  }
+                  else {
+                       return res.json({error: 'User dosent found.'})
+                  }
+              })
+              .catch(err => {
+                  console.log(err)
+                  return res.send('error: '+err)
+              })
+ }
+
+
+//edit user type
+exports.editType = async (req, res, next) => {
+
+              User.findOne({
+                  email: req.body.email
+              })
+              .then( user1 => {
+                  if (user1) {
+                        User.updateOne( { email: req.body.email },
+                                        { $set:     { type: req.body.type } }
+                                    ).exec((error, data) => {
+
+                                      if (error) {
+                                        console.log(error)
+                                        return res.status(500).send("There was a problem finding the user.");
+                                      } else {
+                                        return res.status(201).json(
+                                          {
+                                            massage: 'user type updated successfully!',
+                                            result: data
+                                          });
+                                      }
+                                   });
+                  }
+                  else {
+                       return res.json({error: 'User dosent found.'})
+                  }
+              })
+              .catch(err => {
+                  console.log(err)
+                  return res.send('error: '+err)
+              })
+ }
+

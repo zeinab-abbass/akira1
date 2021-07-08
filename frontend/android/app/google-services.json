@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "685627978798",
+    "project_id": "akira-82b39",
+    "storage_bucket": "akira-82b39.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:685627978798:android:2d38322665319268bc5bbf",
+        "android_client_info": {
+          "package_name": "akira.app.com"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "685627978798-2oca28v7us9dc4ja8suba1tvscmjr0qp.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBfdFNe4aeueupxPj4zhVTL1DM6UkVHt8A"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "685627978798-2oca28v7us9dc4ja8suba1tvscmjr0qp.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

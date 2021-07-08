@@ -89,9 +89,9 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
                       ),
                     ),
                       Text(
-                        "Zeinab",
+                        name,
                         style: GoogleFonts.poppins(
-                          fontSize: 20,
+                          fontSize: 15,
                           color: Color(0xff205072),
                           fontWeight: FontWeight.w500,
                         ),
@@ -198,8 +198,8 @@ class _Register5State extends State<Register5> with SingleTickerProviderStateMix
       );
       setState(() async {
         _imageFile = pickedFile;
-        imagepath = pickedFile !=null ? pickedFile.path : null;
-        User user = await _authService.register(name, username, email, password, phone, location);
+        imagepath = pickedFile !=null ? pickedFile.path : "assets/images/profile.png";
+        User user = await _authService.register(name, username, email, password, phone, location, imagepath);
         Navigator.push(
             context!,
             MaterialPageRoute(

@@ -13,5 +13,8 @@ router.post('/validate', actions.validate)
 router.post('/edit', actions.edit)
 router.post('/get', actions.get)
 router.get('/users', actions.users)
+router.post('/usersByLocation', actions.usersByLocation)
+router.post('/editStatus', actions.editStatus)
+router.post('/editType', actions.editType)
 
 module.exports = router;

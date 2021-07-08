@@ -8,11 +8,12 @@ class User {
   String phone;
   String location;
   String type;
+  String photo;
   bool status;
   List<String> languages;
   List<String> hobbies;
   List<String> interests;
-  List<dynamic> experiances;
+  List<dynamic> experiences;
 
   User({
     required this.id,
@@ -24,10 +25,11 @@ class User {
     required this.location,
     required this.languages,
     required this.interests,
-    required this.experiances,
+    required this.experiences,
     required this.hobbies,
     required this.status,
-    required this.type
+    required this.type,
+    required this.photo
   });
 
   factory User.fromJson(Map<String, dynamic> json) {
@@ -41,8 +43,9 @@ class User {
         location: json["location"],
         status: json["status"],
         type: json["type"],
+        photo: json["photo"],
         languages:  List<String>.from(json["languages"]),
-        experiances: json["experiance"],
+        experiences: json["experience"],
         hobbies:  List<String>.from(json["hobbies"]),
         interests:  List<String>.from(json["interests"]),
     );

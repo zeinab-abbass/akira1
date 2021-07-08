@@ -10,8 +10,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthService {
 
-  Future<User> register(name, username, email, password, phone,
-      location) async {
+  Future<User> register(name, username, email, password, phone, location, photo) async {
     User list;
     var response = await http.post(
         Uri.parse(UIGuide.host + "/register"),
@@ -25,6 +24,7 @@ class AuthService {
           'password': password,
           'location': location,
           'phone': phone,
+          'photo': photo
         })
     );
 
@@ -191,6 +191,79 @@ class AuthService {
 
     } else {
       throw Exception('Failed to get users');
+    }
+  }
+
+  //list users by location
+  Future<List<User>> usersByLocation(location) async {
+    List<User> list;
+
+    var response = await http.post(
+      Uri.parse(UIGuide.host + "/usersByLocation"),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body:  jsonEncode(<String, dynamic>{
+        'location': location,
+      })
+    );
+
+    if (response.statusCode == 201) {
+      var users = json.decode(response.body);
+
+      var rest = users as List;
+
+      list = rest.map<User>((json) => User.fromJson(json)).toList();
+
+      return list;
+
+    } else {
+      throw Exception('Failed to get users');
+    }
+  }
+
+
+  Future<int>  UpdateStatus(email, status) async {
+    var response = await http.post(
+        Uri.parse(UIGuide.host + "/editStatus"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'email': email,
+          'status': status
+        })
+    );
+
+    if (response.statusCode == 201) {
+      int res = json.decode(response.body)['result']['ok'];
+      print(res);
+      return res;
+    }
+    else {
+      throw Exception('Failed to update status');
+    }
+  }
+
+  Future<int>  UpdateType(email, type) async {
+    var response = await http.post(
+        Uri.parse(UIGuide.host + "/editType"),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(<String, dynamic>{
+          'email': email,
+          'type': type
+        })
+    );
+
+    if (response.statusCode == 201) {
+      int res = json.decode(response.body)['result']['ok'];
+      print(res);
+      return res;
+    }
+    else {
+      throw Exception('Failed to update type');
     }
   }
 
