@@ -1,20 +1,11 @@
-
-import 'package:assets_audio_player/assets_audio_player.dart';
-import 'package:cabdriver/datamodels/tripdetails.dart';
-import 'package:cabdriver/globalvariabels.dart';
-import 'package:cabdriver/widgets/NotificationDialog.dart';
-import 'package:cabdriver/widgets/ProgressDialog.dart';
-import 'package:firebase_database/firebase_database.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-
 class PushNotificationService{
 
-  final FirebaseMessaging fcm = FirebaseMessaging();
-
+  FirebaseMessaging messaging = FirebaseMessaging.instance;
 
   Future initialize(context) async {
 
